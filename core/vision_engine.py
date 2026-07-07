@@ -27,6 +27,11 @@ import os
 from dataclasses import dataclass
 
 import cv2
+print("cv2 =", cv2)
+print("cv2 file =", getattr(cv2, "__file__", None))
+print("cv2 version =", getattr(cv2, "__version__", None))
+print("Has CascadeClassifier =", hasattr(cv2, "CascadeClassifier"))
+print("cv2 data =", getattr(cv2, "data", None))
 import numpy as np
 from PIL import Image
 
