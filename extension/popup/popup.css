@@ -1,0 +1,33 @@
+body { font-family: system-ui, sans-serif; width: 280px; padding: 14px; }
+h1 { font-size: 14px; margin: 0 0 12px; }
+label { display: block; font-size: 12px; color: #444; margin-bottom: 10px; }
+input[type="text"], input[type="password"] {
+  width: 100%; box-sizing: border-box; padding: 6px 8px; margin-top: 4px;
+  border: 1px solid #ccc; border-radius: 4px; font-size: 12px;
+}
+.toggle { display: flex; align-items: center; gap: 6px; }
+.toggle input { width: auto; }
+button { width: 100%; padding: 8px; border: none; border-radius: 4px;
+  background: #1F3864; color: #fff; cursor: pointer; font-size: 13px; }
+button:active { transform: scale(0.98); }
+#status { font-size: 11px; color: #2BA66C; min-height: 14px; }
+.degraded { font-size: 11px; background: #FAEEDA; color: #633806; padding: 8px; border-radius: 4px; margin-top: 8px; }
+.hidden { display: none; }
+
+.status-row { display: flex; align-items: center; gap: 6px; font-size: 12px; margin-bottom: 12px; }
+.status-dot { width: 8px; height: 8px; border-radius: 50%; background: #999; display: inline-block; }
+
+hr { border: none; border-top: 1px solid #e5e5e5; margin: 14px 0; }
+
+.stats-row { display: flex; justify-content: space-between; text-align: center; margin-bottom: 10px; }
+.stats-row .stat { flex: 1; }
+.stats-row .stat span { display: block; font-size: 18px; font-weight: 700; color: #1F3864; }
+.stats-row .stat label { font-size: 11px; color: #666; }
+
+.history-list { max-height: 140px; overflow-y: auto; }
+.history-row { display: flex; justify-content: space-between; gap: 8px; font-size: 12px;
+  padding: 5px 0; border-bottom: 1px solid #f0f0f0; }
+.history-row b { font-weight: 500; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 160px; }
+.verdict-BLOCK { color: #a32d2d; font-weight: 600; }
+.verdict-WARN { color: #854f0b; font-weight: 600; }
+.verdict-ALLOW { color: #27500a; font-weight: 600; }

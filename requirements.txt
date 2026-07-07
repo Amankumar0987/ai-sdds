@@ -1,0 +1,29 @@
+pytesseract==0.3.13
+pillow==12.2.0
+python-magic==0.4.27
+pdfplumber==0.11.9
+pdfminer-six==20251230
+pytest==9.1.1
+python-dotenv==1.2.2
+fastapi==0.138.1
+uvicorn[standard]==0.49.0
+python-multipart==0.0.32
+slowapi==0.1.10
+
+# Phase 2 — Computer Vision (optional layer; core engine works without these)
+opencv-python-headless==4.13.0.* ; python_version >= "3.9"
+ultralytics==8.4.*
+qrcode==8.*
+
+# Phase 6 — adversarial-evasion defenses
+confusable-homoglyphs==3.3.1
+
+# Phase 7 — observability
+prometheus-client==0.25.0
+
+# Phase 3 — Federated Learning (heavy deps — only needed if running fl/)
+# NOTE: flwr pins cryptography<47.0.0, blocking a patched version that
+# fixes a Moderate CVE (GHSA-537c-gmf6-5ccf). See SECURITY_CHECKLIST.md.
+# Scope is limited to fl/ simulation tooling, not the production API.
+torch==2.12.1
+flwr[simulation]==1.32.0

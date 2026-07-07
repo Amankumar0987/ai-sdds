@@ -1,0 +1,81 @@
+name: CI — Tests & Security
+
+on:
+  push:
+    branches: ["**"]
+  pull_request:
+    branches: ["**"]
+
+permissions:
+  contents: read   # least-privilege: this workflow never needs to write to the repo
+
+jobs:
+  python-tests-and-security:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: System dependencies (tesseract + libmagic)
+        run: sudo apt-get update -qq && sudo apt-get install -y -qq tesseract-ocr tesseract-ocr-hin libmagic1
+
+      - name: Install Python dependencies
+        run: pip install -r requirements.txt pip-audit
+
+      - name: Run tests
+        run: python -m pytest tests/ -v
+
+      - name: Dependency vulnerability scan (pip-audit)
+        run: pip-audit -r requirements.txt
+
+      - name: Secret scan (detect-secrets)
+        run: |
+          pip install detect-secrets
+          detect-secrets scan --all-files --exclude-files 'node_modules/' > /tmp/current.json
+          detect-secrets audit --diff .secrets.baseline /tmp/current.json || true
+          # Fails the build if a NEW (un-audited) potential secret shows up vs the committed baseline
+          python -c "
+          import json
+          baseline = json.load(open('.secrets.baseline'))['results']
+          current = json.load(open('/tmp/current.json'))['results']
+          new_files = set(current) - set(baseline)
+          if new_files:
+              print('नई फ़ाइलों में संभावित secrets मिले:', new_files)
+              raise SystemExit(1)
+          print('कोई नया secret नहीं मिला।')
+          "
+
+  extension-tests-and-security:
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: extension
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run interceptor unit tests
+        run: npm test
+
+      - name: npm audit (fail on any vulnerability)
+        run: npm audit --audit-level=low
+
+      - name: Validate manifest.json
+        run: python3 -c "import json; json.load(open('manifest.json')); print('manifest.json OK')"
+
+  docker-build:
+    runs-on: ubuntu-latest
+    needs: [python-tests-and-security]
+    steps:
+      - uses: actions/checkout@v4
+      - name: Build API image (build-only — no push from CI without a reviewed release step)
+        run: docker build -t ai-sdds-api:ci .

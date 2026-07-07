@@ -1,0 +1,20 @@
+# Python
+__pycache__/
+*.pyc
+.pytest_cache/
+
+# Node
+node_modules/
+package-lock.json
+
+# Secrets / local config — NEVER commit real values
+.env
+.env.local
+
+# CV training artifacts (regenerate with cv/generate_synthetic_dataset.py + cv/train.py)
+cv/dataset/
+cv/runs/
+
+# OS / editor
+.DS_Store
+*.swp

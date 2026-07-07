@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="hi">
+<head>
+<meta charset="utf-8" />
+<title>AI-SDDS Extension — Test Page</title>
+<style>
+  body { font-family: system-ui, sans-serif; max-width: 560px; margin: 60px auto; }
+  .chat-box { border: 1px solid #ddd; border-radius: 10px; padding: 20px; }
+  .drop-zone { border: 2px dashed #aaa; border-radius: 8px; padding: 30px; text-align: center;
+               color: #666; margin-top: 14px; }
+  .drop-zone.drag { background: #eef4ff; border-color: #2E75B6; }
+  #log { font-family: monospace; font-size: 13px; background: #f5f5f5; padding: 10px;
+         border-radius: 6px; margin-top: 16px; min-height: 60px; white-space: pre-wrap; }
+</style>
+</head>
+<body>
+  <h2>नकली AI चैट पेज (extension टेस्ट के लिए)</h2>
+  <p>यह पेज किसी असली AI साइट जैसा behave करता है — फ़ाइल चुनने/ड्रॉप करने पर
+     यहाँ की अपनी JS चलती है। एक्सटेंशन को इसे रोकना/जाने देना चाहिए, ठीक उसी
+     तरह जैसे यह chat.openai.com या claude.ai पर करेगा।</p>
+
+  <div class="chat-box">
+    <input type="file" id="fileInput" />
+    <div class="drop-zone" id="dropZone">यहाँ फ़ाइल ड्रैग करें</div>
+  </div>
+
+  <div id="log">अभी तक कुछ अपलोड नहीं हुआ...</div>
+
+  <script>
+    const log = document.getElementById("log");
+    const fileInput = document.getElementById("fileInput");
+    const dropZone = document.getElementById("dropZone");
+
+    // यह असली साइट के अपने upload-handling JS का अनुकरण करता है
+    fileInput.addEventListener("change", (e) => {
+      const f = e.target.files[0];
+      log.textContent = f ? `[साइट हैंडलर] फ़ाइल मिली: ${f.name} (${f.size} bytes)` : "कुछ नहीं चुना";
+    });
+
+    dropZone.addEventListener("dragover", (e) => { e.preventDefault(); dropZone.classList.add("drag"); });
+    dropZone.addEventListener("dragleave", () => dropZone.classList.remove("drag"));
+    dropZone.addEventListener("drop", (e) => {
+      e.preventDefault();
+      dropZone.classList.remove("drag");
+      const f = e.dataTransfer.files[0];
+      log.textContent = f ? `[साइट हैंडलर] ड्रॉप से फ़ाइल मिली: ${f.name} (${f.size} bytes)` : "कुछ नहीं मिला";
+    });
+  </script>
+</body>
+</html>

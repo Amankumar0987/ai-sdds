@@ -1,0 +1,49 @@
+<!doctype html>
+<html lang="hi">
+<head>
+  <meta charset="utf-8" />
+  <link rel="stylesheet" href="popup.css" />
+</head>
+<body>
+  <h1>AI-SDDS सेटिंग्स</h1>
+
+  <div class="status-row">
+    <span id="statusDot" class="status-dot"></span>
+    <span>बैकएंड: <strong id="backendStatus">जाँच रहे हैं...</strong></span>
+  </div>
+
+  <label class="toggle">
+    <input type="checkbox" id="enabled" />
+    सुरक्षा सक्रिय करें
+  </label>
+
+  <label>
+    API सर्वर पता
+    <input type="text" id="apiBaseUrl" placeholder="http://localhost:8000" />
+  </label>
+
+  <label>
+    API Key
+    <input type="password" id="apiKey" placeholder="X-API-Key" />
+  </label>
+
+  <button id="save">सेव करें</button>
+  <p id="status"></p>
+
+  <div id="degradedBanner" class="degraded hidden">
+    ⚠ स्कैनर सर्वर से संपर्क नहीं हो पाया — अपलोड अस्थायी रूप से बिना जाँच के जा रहे हैं।
+  </div>
+
+  <hr />
+
+  <div class="stats-row">
+    <div class="stat"><span id="scanCount">0</span><label>स्कैन</label></div>
+    <div class="stat"><span id="blockedCount">0</span><label>ब्लॉक</label></div>
+    <div class="stat"><span id="warnCount">0</span><label>चेतावनी</label></div>
+  </div>
+
+  <div id="history" class="history-list"></div>
+
+  <script src="popup.js"></script>
+</body>
+</html>

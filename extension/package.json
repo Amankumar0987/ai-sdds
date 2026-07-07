@@ -1,0 +1,15 @@
+{
+  "name": "ai-sdds-extension",
+  "version": "1.0.0",
+  "description": "AI-SDDS Browser Extension",
+  "main": "background.js",
+  "scripts": {
+    "test": "node --test content/interceptor.test.js"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "devDependencies": {
+    "jsdom": "^29.1.1"
+  }
+}

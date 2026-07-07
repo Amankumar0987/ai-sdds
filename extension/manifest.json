@@ -1,0 +1,49 @@
+{
+  "manifest_version": 3,
+  "name": "AI-SDDS \u2014 Sensitive Document Guard",
+  "version": "1.0.0",
+  "description": "AI \u091a\u0947\u091f \u092a\u094d\u0932\u0947\u091f\u092b\u0949\u0930\u094d\u0902 \u092a\u0930 \u0905\u092a\u0932\u094b\u0921 \u0938\u0947 \u092a\u0939\u0932\u0947 \u0938\u0902\u0935\u0947\u0926\u0928\u0936\u0940\u0932 \u0926\u0938\u094d\u0924\u093e\u0935\u0947\u091c\u093c (\u0906\u0927\u093e\u0930/PAN/\u092a\u093e\u0938\u0935\u0930\u094d\u0921) \u0938\u094d\u0935\u0924\u0903 \u092a\u0939\u091a\u093e\u0928\u0947\u0902 \u0914\u0930 \u0930\u094b\u0915\u0947\u0902\u0964",
+  "permissions": ["storage"],
+  "host_permissions": [
+    "http://localhost:8000/*",
+    "https://chat.openai.com/*",
+    "https://chatgpt.com/*",
+    "https://claude.ai/*",
+    "https://gemini.google.com/*"
+  ],
+  "background": {
+    "service_worker": "background.js"
+  },
+  "content_scripts": [
+    {
+      "matches": [
+        "https://chat.openai.com/*",
+        "https://chatgpt.com/*",
+        "https://claude.ai/*",
+        "https://gemini.google.com/*",
+        "http://localhost/*",
+        "file:///*"
+      ],
+      "js": [
+        "content/interceptor.js",
+        "engine/risk-engine.js",
+        "engine/history.js",
+        "content/content-script.js"
+      ],
+      "run_at": "document_start"
+    }
+  ],
+  "action": {
+    "default_popup": "popup/popup.html",
+    "default_title": "AI-SDDS",
+    "default_icon": {
+      "16": "icons/icon16.png",
+      "48": "icons/icon48.png"
+    }
+  },
+  "icons": {
+    "16": "icons/icon16.png",
+    "48": "icons/icon48.png",
+    "128": "icons/icon128.png"
+  }
+}

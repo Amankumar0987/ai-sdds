@@ -1,0 +1,29 @@
+<!--
+  android_manifest_snippet.xml
+  =============================
+  यह पूरी AndroidManifest.xml नहीं है — सिर्फ़ वो हिस्सा जो आपको असली
+  `flutter create` से बने android/app/src/main/AndroidManifest.xml की
+  <activity> टैग के अंदर, मौजूदा MAIN/LAUNCHER intent-filter के नीचे
+  जोड़ना है। इससे आपका app "Share" मेन्यू में एक विकल्प के रूप में दिखेगा।
+-->
+
+<!-- इमेज शेयर होने पर -->
+<intent-filter>
+    <action android:name="android.intent.action.SEND" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <data android:mimeType="image/*" />
+</intent-filter>
+
+<!-- PDF शेयर होने पर -->
+<intent-filter>
+    <action android:name="android.intent.action.SEND" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <data android:mimeType="application/pdf" />
+</intent-filter>
+
+<!-- एक साथ कई फ़ाइलें शेयर होने पर (वैकल्पिक) -->
+<intent-filter>
+    <action android:name="android.intent.action.SEND_MULTIPLE" />
+    <category android:name="android.intent.category.DEFAULT" />
+    <data android:mimeType="image/*" />
+</intent-filter>

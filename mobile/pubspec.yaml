@@ -1,0 +1,24 @@
+name: ai_sdds_mobile
+description: AI-SDDS — संवेदनशील दस्तावेज़ शेयर करने से पहले जाँचें
+publish_to: "none"
+version: 1.0.0+1
+
+environment:
+  sdk: ">=3.3.0 <4.0.0"
+
+dependencies:
+  flutter:
+    sdk: flutter
+  http: ^1.2.0                     # /v1/scan को कॉल करने के लिए
+  file_picker: ^8.0.0              # मैनुअल रूप से PDF/इमेज चुनना
+  image_picker: ^1.1.0             # कैमरे से सीधे फ़ोटो लेना
+  flutter_secure_storage: ^9.2.0   # API key — Android Keystore/iOS Keychain में, plaintext कभी नहीं
+  receive_sharing_intent: ^1.8.0   # Android Share Sheet से फ़ाइल पाना ("Share target" pattern)
+
+dev_dependencies:
+  flutter_test:
+    sdk: flutter
+  flutter_lints: ^4.0.0
+
+flutter:
+  uses-material-design: true
