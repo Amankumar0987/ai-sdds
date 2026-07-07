@@ -12,6 +12,7 @@ WORKDIR /app
 
 COPY requirements.txt .
 RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --force-reinstall opencv-python-headless==4.12.0.88
 
 COPY core/ ./core/
 COPY api/ ./api/
