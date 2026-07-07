@@ -37,6 +37,12 @@ import config
 
 from api.auth import verify_api_key
 from api import metrics
+
+import cv2
+
+print("CV2 FILE:", cv2.__file__)
+print("CV2 VERSION:", cv2.__version__)
+print("HAS CASCADE:", hasattr(cv2, "CascadeClassifier"))
 from core import detector, security
 
 logger = logging.getLogger("ai_sdds.api")
