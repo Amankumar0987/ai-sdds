@@ -77,8 +77,8 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=["*"],   # empty by default = no cross-origin allowed
     allow_credentials=False,
-    allow_methods=["GET", "POST"],
-    allow_headers=["X-API-Key", "Content-Type"],
+    allow_methods=["*"],
+    allow_headers=["*"],
 )
 
 
