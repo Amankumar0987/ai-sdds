@@ -144,14 +144,19 @@ test("WARN + user cancels: site handler never fires", async () => {
   assert.equal(siteHandlerFired, false);
 });
 
-test("scanner failure fails open (ALLOW) instead of permanently jamming uploads", async () => {
+test("scanner failure fails CLOSED to a WARN prompt (not silent ALLOW) and does not permanently jam uploads when user proceeds", async () => {
   const window = makeDom();
   const input = window.document.getElementById("fileInput");
 
   let siteHandlerFired = false;
   input.addEventListener("change", () => { siteHandlerFired = true; });
 
-  const ui = { showBlocked: () => {}, showWarn: async () => true, showAllowedBriefly: () => {} };
+  let warnedWith = null;
+  const ui = {
+    showBlocked: () => {},
+    showWarn: async (file, verdict) => { warnedWith = verdict; return true; },
+    showAllowedBriefly: () => {},
+  };
   const scanFile = async () => { throw new Error("network down"); };
 
   const interceptor = createInterceptor({ scanFile, ui });
@@ -165,5 +170,30 @@ test("scanner failure fails open (ALLOW) instead of permanently jamming uploads"
   input.dispatchEvent(new window.Event("change", { bubbles: true }));
   await new Promise((r) => setTimeout(r, 10));
 
-  assert.equal(siteHandlerFired, true, "must fail open, not silently swallow every upload forever");
+  assert.equal(warnedWith?.verdict, "WARN", "a scanner outage must surface a WARN prompt, not silently ALLOW");
+  assert.equal(siteHandlerFired, true, "once the user explicitly confirms, the upload should still go through — not be jammed forever");
+});
+
+test("scanner failure fails CLOSED: if the user declines the WARN prompt, the upload does NOT proceed", async () => {
+  const window = makeDom();
+  const input = window.document.getElementById("fileInput");
+
+  let siteHandlerFired = false;
+  input.addEventListener("change", () => { siteHandlerFired = true; });
+
+  const ui = { showBlocked: () => {}, showWarn: async () => false, showAllowedBriefly: () => {} };
+  const scanFile = async () => { throw new Error("network down"); };
+
+  const interceptor = createInterceptor({ scanFile, ui });
+  interceptor.attach(window.document);
+
+  const file = makeFile("doc.png", "fake-bytes", "image/png");
+  const dt = new global.DataTransfer();
+  dt.items.add(file);
+  Object.defineProperty(input, "files", { value: dt.files, configurable: true });
+
+  input.dispatchEvent(new window.Event("change", { bubbles: true }));
+  await new Promise((r) => setTimeout(r, 10));
+
+  assert.equal(siteHandlerFired, false, "declining the warn prompt on a scanner outage must NOT let the upload through");
 });

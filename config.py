@@ -20,7 +20,7 @@ REQUIRE_API_KEY: bool = os.getenv("AI_SDDS_REQUIRE_API_KEY", "true").lower() != 
 # always scheme://host[:port] only. Default is empty (deny all
 # cross-origin) — fail closed, not open.
 ALLOWED_ORIGINS: list[str] = [o for o in os.getenv("AI_SDDS_ALLOWED_ORIGINS", "").split(",") if o]
-
+ALLOWED_ORIGINS = ["http://localhost:5173", "http://192.168.137.1:5173", "http://192.168.217.1:5173", "http://10.59.221.1:5173"]
 RATE_LIMIT: str = os.getenv("AI_SDDS_RATE_LIMIT", "30/minute")
 
 # Small buffer added to the hard file-size cap to account for multipart

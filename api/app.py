@@ -37,12 +37,8 @@ import config
 
 from api.auth import verify_api_key
 from api import metrics
+from api import gemini_explain
 
-import cv2
-
-print("CV2 FILE:", cv2.__file__)
-print("CV2 VERSION:", cv2.__version__)
-print("HAS CASCADE:", hasattr(cv2, "CascadeClassifier"))
 from core import detector, security
 
 logger = logging.getLogger("ai_sdds.api")
@@ -75,10 +71,16 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["https://ai-sdds-production.up.railway.app","https://ai-sdds-production.up.railway.app/v1/health"],   # empty by default = no cross-origin allowed
+    # BUG FIX: this was hardcoded to "*", which silently ignored
+    # config.ALLOWED_ORIGINS entirely. That meant AI_SDDS_ALLOWED_ORIGINS
+    # was doing nothing, and more importantly, a browser blocking the
+    # actual cross-origin request (e.g. Vercel PWA -> Railway API, or the
+    # extension) makes apiClient.js/background.js hit their catch block
+    # and fail-open -> which looked like "blocking doesn't work".
+    allow_origins=config.ALLOWED_ORIGINS,   # empty by default = no cross-origin allowed
     allow_credentials=False,
-    allow_methods=["GET", "POST"],
-    allow_headers=["X-API-Key", "Content-Type", "Accept"],
+    allow_methods=["POST", "GET", "OPTIONS"],
+    allow_headers=["x-api-key", "content-type", "accept", "origin"],
 )
 
 
@@ -130,6 +132,16 @@ async def scan_document(
     duration = time.monotonic() - start
     metrics.record_scan(result.verdict, duration)
     return JSONResponse(content=result.to_dict())
+
+
+@app.post("/v1/explain", dependencies=[Depends(verify_api_key)])
+@limiter.limit(config.RATE_LIMIT)
+async def explain_scan(request: Request, scan_result: dict):
+    """Takes the already-computed ScanResult JSON (never the raw file)
+    and returns a short plain-Hindi explanation. Falls back to a canned
+    Hindi explanation if Gemini is unavailable — never errors out."""
+    explanation = gemini_explain.explain(scan_result)
+    return JSONResponse(content={"explanation": explanation})
 
 
 

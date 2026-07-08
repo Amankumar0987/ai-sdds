@@ -11,6 +11,13 @@ there's a test that would fail if it broke.
 import os
 import pytest
 import numpy as np
+
+# torch/flwr live in requirements-fl.txt now, not requirements.txt (they're
+# only needed for FL training/simulation, not the production API) — so a
+# plain `pip install -r requirements.txt` environment (e.g. CI running only
+# the API test suite, or Railway) won't have them. Skip this whole module
+# cleanly instead of a confusing ModuleNotFoundError/collection error.
+pytest.importorskip("torch", reason="requires requirements-fl.txt (torch) — not needed for the API")
 from fl.client import FlowerClient
 from fl.model import TinyClassifier, get_parameters
 

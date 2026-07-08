@@ -35,12 +35,15 @@ async function scanFile(file) {
     });
   } catch (networkErr) {
     await flagDegradedMode(`API से कनेक्ट नहीं हो सका: ${networkErr.message}`);
-    return { verdict: "ALLOW", reason: "स्कैनर अनुपलब्ध - अस्थायी रूप से अनुमति दी गई", degraded: true };
+    // FIX: was "ALLOW" (fail-open) — any network/CORS problem silently
+    // let every upload through with no blocking at all. Now fails
+    // CLOSED to "WARN" so the user gets an explicit prompt instead.
+    return { verdict: "WARN", reason: "स्कैनर अनुपलब्ध — जाँच नहीं हो पाई, सावधानी से आगे बढ़ें", degraded: true };
   }
 
   if (!response.ok) {
     await flagDegradedMode(`स्कैनर ने HTTP ${response.status} लौटाया`);
-    return { verdict: "ALLOW", reason: `स्कैनर त्रुटि (HTTP ${response.status})`, degraded: true };
+    return { verdict: "WARN", reason: `स्कैनर त्रुटि (HTTP ${response.status}) — जाँच नहीं हो पाई, सावधानी से आगे बढ़ें`, degraded: true };
   }
 
   return response.json();
@@ -61,6 +64,6 @@ chrome.runtime.onMessage.addListener((message, _sender, sendResponse) => {
   
   scanFile(file)
     .then(sendResponse)
-    .catch((err) => sendResponse({ verdict: "ALLOW", reason: String(err), degraded: true }));
+    .catch((err) => sendResponse({ verdict: "WARN", reason: `स्कैनर त्रुटि: ${String(err)} — सावधानी से आगे बढ़ें`, degraded: true }));
   return true; // keep the message channel open for the async response
 });

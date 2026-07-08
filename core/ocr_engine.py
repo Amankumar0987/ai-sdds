@@ -33,9 +33,23 @@ load_dotenv()
 # an optional environment variable. Windows users set it once in their
 # own .env, nothing else changes:
 #   AI_SDDS_TESSERACT_CMD=C:\Program Files\Tesseract-OCR\tesseract.exe
+#
+# ROBUSTNESS FIX: if this points to a path that doesn't exist on THIS
+# machine — e.g. a Windows-only .env value that got carried over into a
+# Linux/Docker/Railway deployment — we ignore it and fall back to
+# PATH-based discovery instead of silently breaking OCR for every
+# single scan (which used to surface as every file being REJECTED with
+# "OCR engine not found", i.e. nothing ever got scanned or blocked).
 _tesseract_cmd_override = os.getenv("AI_SDDS_TESSERACT_CMD")
-if _tesseract_cmd_override:
+if _tesseract_cmd_override and os.path.exists(_tesseract_cmd_override):
     pytesseract.pytesseract.tesseract_cmd = _tesseract_cmd_override
+elif _tesseract_cmd_override:
+    import logging
+    logging.getLogger("ai_sdds.ocr").warning(
+        "AI_SDDS_TESSERACT_CMD=%s इस मशीन पर मौजूद नहीं है (शायद Windows-only "
+        "path Linux/Railway पर आ गया) — PATH से tesseract ढूँढने की कोशिश की "
+        "जा रही है।", _tesseract_cmd_override,
+    )
 
 
 class OCRUnavailable(Exception):

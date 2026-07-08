@@ -4,6 +4,7 @@ python-magic==0.4.27
 pdfplumber==0.11.9
 pdfminer-six==20251230
 pytest==9.1.1
+httpx==0.28.1
 python-dotenv==1.2.2
 fastapi==0.138.1
 uvicorn[standard]==0.49.0
@@ -11,8 +12,10 @@ python-multipart==0.0.32
 slowapi==0.1.10
 
 # Phase 2 — Computer Vision (optional layer; core engine works without these)
+# NOTE: ultralytics (YOLO) moved to requirements-fl.txt — it's only
+# lazy-imported by core/vision_engine.py when AI_SDDS_YOLO_WEIGHTS is
+# set, so it's not needed for the API to run.
 opencv-python-headless==4.12.0.88
-ultralytics==8.3.170
 qrcode==8.*
 
 # Phase 6 — adversarial-evasion defenses
@@ -21,9 +24,13 @@ confusable-homoglyphs==3.3.1
 # Phase 7 — observability
 prometheus-client==0.25.0
 
-# Phase 3 — Federated Learning (heavy deps — only needed if running fl/)
-# NOTE: flwr pins cryptography<47.0.0, blocking a patched version that
-# fixes a Moderate CVE (GHSA-537c-gmf6-5ccf). See SECURITY_CHECKLIST.md.
-# Scope is limited to fl/ simulation tooling, not the production API.
-torch==2.12.1
-flwr[simulation]==1.32.0
+# Phase 8 — Gemini-powered plain-language explanations
+google-generativeai==0.8.6
+
+# NOTE: torch, flwr[simulation], and ultralytics used to live here too.
+# They've been moved to requirements-fl.txt because they are NOT needed
+# to run the API (ultralytics/YOLO is only lazy-imported in
+# core/vision_engine.py if AI_SDDS_YOLO_WEIGHTS is set — which it isn't
+# by default). Installing torch+flwr in the API image adds ~3-4GB and is
+# almost certainly why the Railway build was failing/timing out.
+# See requirements-fl.txt and fl/README.md if you're running FL training.

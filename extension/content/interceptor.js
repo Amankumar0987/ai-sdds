@@ -46,10 +46,15 @@ console.log("🛡 AI-SDDS Interceptor Loaded");
         try {
           verdict = await scanFile(file);
         } catch (err) {
-          // Fail-open: a scanner outage must not permanently jam every
-          // upload on every site. Logged loudly elsewhere (background.js),
-          // surfaced to the user via the popup's degraded-mode banner.
-          verdict = { verdict: "ALLOW", reason: "स्कैनर अनुपलब्ध", degraded: true };
+          // FIX: was fail-open to ALLOW, which meant a scanner outage
+          // silently let every upload through with zero protection —
+          // exactly the "blocking doesn't work" bug. We still don't
+          // want to permanently jam uploads on every site, so we
+          // fail-closed to WARN instead: the user sees a clear prompt
+          // and must explicitly choose to proceed, rather than the
+          // check silently disappearing. Surfaced to the user via the
+          // popup's degraded-mode banner too (see background.js).
+          verdict = { verdict: "WARN", reason: "स्कैनर अनुपलब्ध — जाँच नहीं हो पाई, सावधानी से आगे बढ़ें", degraded: true };
         }
 
         if (verdict.verdict === "BLOCK") {

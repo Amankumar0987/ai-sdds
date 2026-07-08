@@ -1,0 +1,15 @@
+# requirements-fl.txt
+# ====================
+# Heavy dependencies needed ONLY for federated-learning simulation
+# (fl/) and YOLO layout-model training (cv/train.py). NOT needed to
+# run the production API — install these in your own training
+# environment, not on Railway/production.
+#
+#   pip install -r requirements.txt -r requirements-fl.txt
+#
+# NOTE: flwr pins cryptography<47.0.0, blocking a patched version that
+# fixes a Moderate CVE (GHSA-537c-gmf6-5ccf). See SECURITY_CHECKLIST.md.
+# Scope is limited to fl/ simulation tooling, not the production API.
+torch==2.12.1
+flwr[simulation]==1.32.0
+ultralytics==8.3.170

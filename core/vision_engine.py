@@ -27,9 +27,6 @@ import os
 from dataclasses import dataclass
 
 import cv2
-print("cv2 =", cv2)
-print("cv2 file =", getattr(cv2, "__file__", None))
-print("has Cascade =", hasattr(cv2, "CascadeClassifier"))
 import numpy as np
 from PIL import Image
 
