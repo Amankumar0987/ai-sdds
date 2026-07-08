@@ -25,28 +25,6 @@ import secrets
 import logging
 import time
 
-import traceback
-
-try:
-    from api.auth import verify_api_key
-    print("auth OK")
-
-    from api import metrics
-    print("metrics OK")
-
-    from api import gemini_explain
-    print("gemini OK")
-
-    from core import detector
-    print("detector OK")
-
-    from core import security
-    print("security OK")
-
-except Exception:
-    traceback.print_exc()
-    raise
-
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, File, UploadFile, Depends, Request
 from fastapi.middleware.cors import CORSMiddleware
