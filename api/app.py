@@ -19,7 +19,27 @@ them:
                                        generic message, never a stack
                                        trace, to the caller.
 """
+import traceback
 
+try:
+    from api.auth import verify_api_key
+    print("auth OK")
+
+    from api import metrics
+    print("metrics OK")
+
+    from api import gemini_explain
+    print("gemini OK")
+
+    from core import detector
+    print("detector OK")
+
+    from core import security
+    print("security OK")
+
+except Exception:
+    traceback.print_exc()
+    raise
 from __future__ import annotations
 import secrets
 import logging
