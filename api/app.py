@@ -19,6 +19,12 @@ them:
                                        generic message, never a stack
                                        trace, to the caller.
 """
+
+from __future__ import annotations
+import secrets
+import logging
+import time
+
 import traceback
 
 try:
@@ -40,10 +46,6 @@ try:
 except Exception:
     traceback.print_exc()
     raise
-from __future__ import annotations
-import secrets
-import logging
-import time
 
 from contextlib import asynccontextmanager
 from fastapi import FastAPI, File, UploadFile, Depends, Request
