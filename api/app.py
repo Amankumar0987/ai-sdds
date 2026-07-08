@@ -75,10 +75,10 @@ app.add_exception_handler(RateLimitExceeded, _rate_limit_exceeded_handler)
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],   # empty by default = no cross-origin allowed
+    allow_origins=["https://ai-sdds-production.up.railway.app"],   # empty by default = no cross-origin allowed
     allow_credentials=False,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=["GET", "POST"],
+    allow_headers=["X-API-Key", "Content-Type", "Accept"],
 )
 
 
